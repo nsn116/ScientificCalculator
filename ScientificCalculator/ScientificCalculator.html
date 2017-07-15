@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Scientific Calculator</title>
+</head>
+<body style="text-align: center; padding-top: 14%; background-image: url('images/background.jpg'); ">
+<input class = "gsfi" id = "lst-ib" maxlength="2048" name="output" type="text" title="output">
+<br />
+<button class="Button" type="button" onclick="reset()">CLEAR</button>
+<br />
+<button class="Button" type="button" onclick="clicked(1)">1</button>
+<button class="Button" type="button" onclick="clicked(2)">2</button>
+<button class="Button" type="button" onclick="clicked(3)">3</button>
+<br />
+<button class="Button" type="button" onclick="clicked(4)">4</button>
+<button class="Button" type="button" onclick="clicked(5)">5</button>
+<button class="Button" type="button" onclick="clicked(6)">6</button>
+<br />
+<button class="Button" type="button" onclick="clicked(7)">7</button>
+<button class="Button" type="button" onclick="clicked(8)">8</button>
+<button class="Button" type="button" onclick="clicked(9)">9</button>
+<br />
+<button class="Button" type="button" onclick="equals()">=</button>
+<button class="Button" type="button" onclick="clicked(0)">0</button>
+<button class="Button" type="button" onclick="sum()">+</button>
+
+<br />
+<style>
+  .gsfi {
+    margin-bottom: 10%;
+    width: 40%;
+    padding: 1% 0 1% 0;
+    text-align: center;
+  }
+  .Button {
+    align-content: center;
+    height: 20%;
+    width: 20%;
+    padding: 1% 0 1% 0;
+  }
+</style>
+<script>
+  var solution = 0;
+  var operand1 = 0;
+  var operand2 = 0;
+  var temp = 0;
+  var lastSetOperand1 = false;
+  var lastSetOperand2 = false;
+  var operationPending = false;
+  var pendingOperation;
+
+  function sum() {
+    clicked();
+    document.getElementById("lst-ib").value += " + ";
+    pendingOperation = plus();
+    operationPending = true;
+  }
+
+  function equals() {
+    clicked();
+    document.getElementById("lst-ib").value = String(solution);
+    temp = solution;
+    lastSetOperand1 = false;
+    lastSetOperand2 = true;
+    solution = 0;
+  }
+
+  function clicked(val) {
+    if (val === undefined) {
+      if (!lastSetOperand1) {
+        operand1 = temp;
+        lastSetOperand1 = true;
+        lastSetOperand2 = false;
+        if (operationPending) {
+          pendingOperation(operand1);
+          operationPending = false;
+        }
+      } else {
+        operand2 = temp;
+        lastSetOperand2 = true;
+        lastSetOperand1 = false;
+        if (operationPending) {
+          pendingOperation(operand2);
+          operationPending = false;
+        }
+      }
+      temp = 0;
+    } else {
+      temp = temp * 10 + val;
+      document.getElementById("lst-ib").value += String(val);
+    }
+  }
+
+  function plus() {
+    var lastSet = (lastSetOperand1) ? operand1 : operand2;
+    return function (number) {
+        solution = number + lastSet;
+      };
+  }
+
+  function reset() {
+    solution = 0;
+    operand1 = 0;
+    operand2 = 0;
+    temp = 0;
+    lastSetOperand1 = false;
+    lastSetOperand2 = false;
+    operationPending = false;
+    pendingOperation = false;
+    document.getElementById("lst-ib").value = "";
+  }
+////    function displayButtons() {
+//      var buttonArr = [];
+//      var symbols = ["=", "0", "+"];
+//      var body = document.getElementsByTagName("body")[0];
+//      var button;
+//      for (var i = 1; i < 13; i++) {
+//        button = document.createElement("button");
+//        button.id = "BUTTON";
+//        button.attachEvent('onclick', onclickButton);
+//        if (i < 10) {
+//          button.setAttribute("value", String(i));
+//          button.innerHTML = i;
+//        } else {
+//          button.setAttribute("value", symbols[i - 10]);
+//          button.innerHTML = symbols[i - 10];
+//        }
+//        buttonArr.push(button);
+//        body.appendChild(button);
+//
+//        if (i % 3 === 0) {
+//          var lineBreak = document.createElement('br');
+//          body.appendChild(lineBreak);
+//        }
+//      }
+////    }
+//
+//      function onclickButton() {
+//        alert("Hi");
+//      }
+////    displayButtons();
+//
+//      document.getElementById("BUTTON").onclick = function() {
+//        alert("button was clicked");
+//      }​;​
+
+
+  </script>
+
+</body>
+</html>
