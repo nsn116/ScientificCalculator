@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Scientific Calculator</title>
+  <meta charset="UTF-8">
+  <title>Scientific Calculator</title>
 </head>
 <body style="text-align: center; padding-top: 14%; background-image: url('images/background.jpg'); ">
 <input class = "gsfi" id = "lst-ib" maxlength="2048" name="output" type="text" title="output">
 <br />
-<button class="Button" type="button" onclick="reset()">CLEAR</button>
+<button class="Button" type="button" onclick="switchOff()">OFF</button>
+<button class="Button" type="button" onclick="reset()">AC</button>
+<button class="Button" type="button" onclick="backspace();"><-</button>
 <br />
 <button class="Button" type="button" onclick="clicked(1)">1</button>
 <button class="Button" type="button" onclick="clicked(2)">2</button>
@@ -49,6 +51,28 @@
   var lastSetOperand2 = false;
   var operationPending = false;
   var pendingOperation;
+
+  function switchOff() {
+    window.close();
+  }
+
+  function currentTextMessage() {
+    return document.getElementById("lst-ib").value;
+  }
+  
+  function backspace() {
+    var lastChar = currentTextMessage().charAt(currentTextMessage().length - 1);
+    if (!isNaN(Number(lastChar))) {
+      document.getElementById("lst-ib").value = currentTextMessage().substring(0, currentTextMessage().length - 1);
+      if (lastSetOperand1) {
+        operand1 /= 10;
+      } else {
+        operand2 /= 10;
+      }
+    } else {
+      // TODO: FIX else case here and also in the if case fix the / by 10 for temp and solution n all.
+    }
+  }
 
   function sum() {
     clicked();
@@ -95,8 +119,8 @@
   function plus() {
     var lastSet = (lastSetOperand1) ? operand1 : operand2;
     return function (number) {
-        solution = number + lastSet;
-      };
+      solution = number + lastSet;
+    };
   }
 
   function reset() {
@@ -110,43 +134,43 @@
     pendingOperation = false;
     document.getElementById("lst-ib").value = "";
   }
-////    function displayButtons() {
-//      var buttonArr = [];
-//      var symbols = ["=", "0", "+"];
-//      var body = document.getElementsByTagName("body")[0];
-//      var button;
-//      for (var i = 1; i < 13; i++) {
-//        button = document.createElement("button");
-//        button.id = "BUTTON";
-//        button.attachEvent('onclick', onclickButton);
-//        if (i < 10) {
-//          button.setAttribute("value", String(i));
-//          button.innerHTML = i;
-//        } else {
-//          button.setAttribute("value", symbols[i - 10]);
-//          button.innerHTML = symbols[i - 10];
-//        }
-//        buttonArr.push(button);
-//        body.appendChild(button);
-//
-//        if (i % 3 === 0) {
-//          var lineBreak = document.createElement('br');
-//          body.appendChild(lineBreak);
-//        }
-//      }
-////    }
-//
-//      function onclickButton() {
-//        alert("Hi");
-//      }
-////    displayButtons();
-//
-//      document.getElementById("BUTTON").onclick = function() {
-//        alert("button was clicked");
-//      }​;​
+  ////    function displayButtons() {
+  //      var buttonArr = [];
+  //      var symbols = ["=", "0", "+"];
+  //      var body = document.getElementsByTagName("body")[0];
+  //      var button;
+  //      for (var i = 1; i < 13; i++) {
+  //        button = document.createElement("button");
+  //        button.id = "BUTTON";
+  //        button.attachEvent('onclick', onclickButton);
+  //        if (i < 10) {
+  //          button.setAttribute("value", String(i));
+  //          button.innerHTML = i;
+  //        } else {
+  //          button.setAttribute("value", symbols[i - 10]);
+  //          button.innerHTML = symbols[i - 10];
+  //        }
+  //        buttonArr.push(button);
+  //        body.appendChild(button);
+  //
+  //        if (i % 3 === 0) {
+  //          var lineBreak = document.createElement('br');
+  //          body.appendChild(lineBreak);
+  //        }
+  //      }
+  ////    }
+  //
+  //      function onclickButton() {
+  //        alert("Hi");
+  //      }
+  ////    displayButtons();
+  //
+  //      document.getElementById("BUTTON").onclick = function() {
+  //        alert("button was clicked");
+  //      }​;​
 
 
-  </script>
+</script>
 
 </body>
 </html>
