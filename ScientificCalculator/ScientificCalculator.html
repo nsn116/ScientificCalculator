@@ -62,15 +62,22 @@
   
   function backspace() {
     var lastChar = currentTextMessage().charAt(currentTextMessage().length - 1);
-    if (!isNaN(Number(lastChar))) {
+    if (!isNaN(Number(lastChar)) && lastChar !== " ") {
       document.getElementById("lst-ib").value = currentTextMessage().substring(0, currentTextMessage().length - 1);
-      if (lastSetOperand1) {
-        operand1 /= 10;
-      } else {
-        operand2 /= 10;
-      }
+      temp = (temp - (temp % 10)) / 10;
     } else {
-      // TODO: FIX else case here and also in the if case fix the / by 10 for temp and solution n all.
+      document.getElementById("lst-ib").value = currentTextMessage().substring(0, currentTextMessage().length - 3);
+      operationPending = false;
+      pendingOperation = undefined;
+      if (lastSetOperand1) {
+        temp = operand1;
+        lastSetOperand1 = false;
+        lastSetOperand2 = true;
+      } else {
+        temp = operand2;
+        lastSetOperand2 = false;
+        lastSetOperand1 = true;
+      }
     }
   }
 
