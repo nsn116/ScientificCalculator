@@ -215,10 +215,14 @@
   }
 
   function pi() {
-    clicked();
+    if (!operationPending) {
+      clicked();
+      temp = Math.PI;
+    } else {
+      pendingOperation(Math.PI);
+      operationPending = false;
+    }
     document.getElementById("lst-ib").value += String(Math.PI);
-    solution = Math.PI;
-    equals();
   }
 
   function negate() {
@@ -236,10 +240,14 @@
   }
 
   function e() {
-    clicked();
+    if (!operationPending) {
+      clicked();
+      temp = Math.E;
+    } else {
+      pendingOperation(Math.E);
+      operationPending = false;
+    }
     document.getElementById("lst-ib").value += String(Math.E);
-    solution = Math.E;
-    equals();
   }
 
   function power() {
