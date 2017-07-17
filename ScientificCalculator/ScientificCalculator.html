@@ -26,11 +26,28 @@
 <button class="Button" type="button" onclick="equals()">=</button>
 <button class="Button" type="button" onclick="clicked(0)">0</button>
 <button class="Button" type="button" onclick="sum()">+</button>
-
+<br />
+<button class="Button" type="button" onclick="subtraction()">-</button>
+<button class="Button" type="button" onclick="multiplication()">*</button>
+<button class="Button" type="button" onclick="division()">/</button>
+<br />
+<button class="Button" type="button" onclick="sine()">sin</button>
+<button class="Button" type="button" onclick="cosine()">cos</button>
+<button class="Button" type="button" onclick="tangent()">tan</button>
+<br />
+<button class="Button" type="button" onclick="squareRoot()">√</button>
+<button class="Button" type="button" onclick="log10()">log</button>
+<button class="Button" type="button" onclick="logE()">ln</button>
+<br />
+<button class="Button" type="button" onclick="pi()">π</button>
+<button class="Button" type="button" onclick="negate()">+ / -</button>
+<button class="Button" type="button" onclick="e()">e</button>
+<br />
+<button class="Button" type="button" onclick="power()">xⁿ</button>
 <br />
 <style>
   .gsfi {
-    margin-bottom: 10%;
+    margin-bottom: 6.5%;
     width: 40%;
     padding: 1% 0 1% 0;
     text-align: center;
@@ -49,6 +66,8 @@
   var temp = 0;
   var lastSetOperand1 = false;
   var lastSetOperand2 = false;
+  var isSolutionInfinity = false;
+  var isInvalidOperation = false;
   var operationPending = false;
   var pendingOperation;
 
@@ -88,9 +107,164 @@
     operationPending = true;
   }
 
+  function plus() {
+    var lastSet = (lastSetOperand1) ? operand1 : operand2;
+    return function (number) {
+      solution = number + lastSet;
+    };
+  }
+
+  function subtraction() {
+    clicked();
+    document.getElementById("lst-ib").value += " - ";
+    pendingOperation = minus();
+    operationPending = true;
+  }
+
+  function minus() {
+    var lastSet = (lastSetOperand1) ? operand1 : operand2;
+    return function (number) {
+      solution = lastSet - number;
+    };
+  }
+
+  function multiplication() {
+    clicked();
+    document.getElementById("lst-ib").value += " * ";
+    pendingOperation = prod();
+    operationPending = true;
+  }
+
+  function prod() {
+    var lastSet = (lastSetOperand1) ? operand1 : operand2;
+    return function (number) {
+      solution = number * lastSet;
+    };
+  }
+
+  function division() {
+    clicked();
+    document.getElementById("lst-ib").value += " / ";
+    pendingOperation = div();
+    operationPending = true;
+  }
+
+  function div() {
+    var lastSet = (lastSetOperand1) ? operand1 : operand2;
+    return function (number) {
+      if (number === 0) {
+        isSolutionInfinity = true;
+      } else {
+        solution = lastSet / number;
+      }
+    };
+  }
+
+  function sine() {
+    clicked();
+    document.getElementById("lst-ib").value = "sin ( " + document.getElementById("lst-ib").value + " )";
+    var lastSet = (lastSetOperand1) ? operand1 : operand2;
+    solution = Math.sin(lastSet);
+  }
+
+  function cosine() {
+    clicked();
+    document.getElementById("lst-ib").value = "cos ( " + document.getElementById("lst-ib").value + " )";
+    var lastSet = (lastSetOperand1) ? operand1 : operand2;
+    solution = Math.cos(lastSet);
+  }
+
+  function tangent() {
+    clicked();
+    document.getElementById("lst-ib").value = "tan ( " + document.getElementById("lst-ib").value + " )";
+    var lastSet = (lastSetOperand1) ? operand1 : operand2;
+    solution = Math.tan(lastSet);
+  }
+
+  function squareRoot() {
+    clicked();
+    document.getElementById("lst-ib").value = "√ " + document.getElementById("lst-ib").value;
+    var lastSet = (lastSetOperand1) ? operand1 : operand2;
+    if (lastSet < 0) {
+      isInvalidOperation = true;
+    } else {
+      solution = Math.sqrt(lastSet);
+    }
+  }
+
+  function log10() {
+    clicked();
+    document.getElementById("lst-ib").value = "log " + document.getElementById("lst-ib").value;
+    var lastSet = (lastSetOperand1) ? operand1 : operand2;
+    if (lastSet <= 0) {
+      isInvalidOperation = true;
+    } else {
+      solution = Math.log(lastSet) / Math.log(10);
+    }
+  }
+
+  function logE() {
+    clicked();
+    document.getElementById("lst-ib").value = "ln " + document.getElementById("lst-ib").value;
+    var lastSet = (lastSetOperand1) ? operand1 : operand2;
+    if (lastSet <= 0) {
+      isInvalidOperation = true;
+    } else {
+      solution = Math.log(lastSet);
+    }
+  }
+
+  function pi() {
+    clicked();
+    document.getElementById("lst-ib").value += String(Math.PI);
+    solution = Math.PI;
+    equals();
+  }
+
+  function negate() {
+    clicked();
+    var lastSet = (lastSetOperand1) ? operand1 : operand2;
+    if (lastSet !== 0) {
+      if (lastSet < 0) {
+        document.getElementById("lst-ib").value = document.getElementById("lst-ib").value.substring(1);
+      } else {
+        document.getElementById("lst-ib").value = "-" + document.getElementById("lst-ib").value;
+      }
+    }
+    solution = -1 * lastSet;
+    equals();
+  }
+
+  function e() {
+    clicked();
+    document.getElementById("lst-ib").value += String(Math.E);
+    solution = Math.E;
+    equals();
+  }
+
+  function power() {
+    clicked();
+    document.getElementById("lst-ib").value += " raised to ";
+    pendingOperation = raise();
+    operationPending = true;
+  }
+
+  function raise() {
+    var lastSet = (lastSetOperand1) ? operand1 : operand2;
+    return function (number) {
+      solution = Math.pow(lastSet, number);
+    };
+  }
+
   function equals() {
     clicked();
-    document.getElementById("lst-ib").value = String(solution);
+    if (isSolutionInfinity) {
+      document.getElementById("lst-ib").value = "Cannot divide by zero ! RESET !!!";
+    } else if (isInvalidOperation) {
+      document.getElementById("lst-ib").value = "Invalid Operation ! RESET !!!";
+    } else {
+      document.getElementById("lst-ib").value = String(solution);
+    }
     temp = solution;
     lastSetOperand1 = false;
     lastSetOperand2 = true;
@@ -123,13 +297,6 @@
     }
   }
 
-  function plus() {
-    var lastSet = (lastSetOperand1) ? operand1 : operand2;
-    return function (number) {
-      solution = number + lastSet;
-    };
-  }
-
   function reset() {
     solution = 0;
     operand1 = 0;
@@ -139,43 +306,10 @@
     lastSetOperand2 = false;
     operationPending = false;
     pendingOperation = false;
+    isSolutionInfinity = false;
+    isInvalidOperation = false;
     document.getElementById("lst-ib").value = "";
   }
-  ////    function displayButtons() {
-  //      var buttonArr = [];
-  //      var symbols = ["=", "0", "+"];
-  //      var body = document.getElementsByTagName("body")[0];
-  //      var button;
-  //      for (var i = 1; i < 13; i++) {
-  //        button = document.createElement("button");
-  //        button.id = "BUTTON";
-  //        button.attachEvent('onclick', onclickButton);
-  //        if (i < 10) {
-  //          button.setAttribute("value", String(i));
-  //          button.innerHTML = i;
-  //        } else {
-  //          button.setAttribute("value", symbols[i - 10]);
-  //          button.innerHTML = symbols[i - 10];
-  //        }
-  //        buttonArr.push(button);
-  //        body.appendChild(button);
-  //
-  //        if (i % 3 === 0) {
-  //          var lineBreak = document.createElement('br');
-  //          body.appendChild(lineBreak);
-  //        }
-  //      }
-  ////    }
-  //
-  //      function onclickButton() {
-  //        alert("Hi");
-  //      }
-  ////    displayButtons();
-  //
-  //      document.getElementById("BUTTON").onclick = function() {
-  //        alert("button was clicked");
-  //      }​;​
-
 
 </script>
 
