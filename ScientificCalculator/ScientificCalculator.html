@@ -43,7 +43,9 @@
 <button class="Button" type="button" onclick="negate()">+ / -</button>
 <button class="Button" type="button" onclick="e()">e</button>
 <br />
+<button class="Button" type="button" onclick="percentage()">%</button>
 <button class="Button" type="button" onclick="power()">xⁿ</button>
+<button class="Button" type="button" onclick="decimal()">.</button>
 <br />
 <style>
   .gsfi {
@@ -69,6 +71,8 @@
   var isSolutionInfinity = false;
   var isInvalidOperation = false;
   var operationPending = false;
+  var isDecimal = false;
+  var sinceDecimal = 1;
   var pendingOperation;
 
   function switchOff() {
@@ -84,7 +88,17 @@
     if (!isNaN(Number(lastChar)) && lastChar !== " ") {
       document.getElementById("lst-ib").value = currentTextMessage().substring(0, currentTextMessage().length - 1);
       temp = (temp - (temp % 10)) / 10;
+      // TODO : Fix the code commented below to make backspace work for decimals as well.
+//      if (sinceDecimal > 1) {
+//        temp = (temp - (temp % 10)) / 10;
+//      } else {
+//        temp -= (Number(lastChar) / Math.pow(10, sinceDecimal - 1));
+//        sinceDecimal--;
+//      }
     } else {
+      // PRE: This function will only undo +, *, -, / operations.
+      // TODO: Although the other functions are easy to undo, due to time
+      // TODO: constraints I will be ignoring them for now.
       document.getElementById("lst-ib").value = currentTextMessage().substring(0, currentTextMessage().length - 3);
       operationPending = false;
       pendingOperation = undefined;
@@ -250,6 +264,11 @@
     document.getElementById("lst-ib").value += String(Math.E);
   }
 
+  function percentage() {
+    document.getElementById("lst-ib").value += "%";
+    temp /= 100;
+  }
+
   function power() {
     clicked();
     document.getElementById("lst-ib").value += " raised to ";
@@ -262,6 +281,16 @@
     return function (number) {
       solution = Math.pow(lastSet, number);
     };
+  }
+
+  function decimal() {
+    if (isDecimal) {
+      document.getElementById("lst-ib").value = "Invalid Operation ! RESET !!!";
+    }
+    else {
+      document.getElementById("lst-ib").value += ".";
+      isDecimal = true;
+    }
   }
 
   function equals() {
@@ -299,8 +328,15 @@
         }
       }
       temp = 0;
+      isDecimal = false;
+      sinceDecimal = 1;
     } else {
-      temp = temp * 10 + val;
+      if (!isDecimal) {
+        temp = temp * 10 + val;
+      } else {
+        temp += (val / Math.pow(10, sinceDecimal));
+        sinceDecimal++;
+      }
       document.getElementById("lst-ib").value += String(val);
     }
   }
@@ -320,6 +356,5 @@
   }
 
 </script>
-
 </body>
 </html>
