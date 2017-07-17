@@ -1,52 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Scientific Calculator</title>
-</head>
 <body style="text-align: center; padding-top: 14%; background-image: url('images/background.jpg'); ">
 <input class = "gsfi" id = "lst-ib" maxlength="2048" name="output" type="text" title="output">
 <br />
-<button class="Button" type="button" onclick="switchOff()">OFF</button>
-<button class="Button" type="button" onclick="reset()">AC</button>
-<button class="Button" type="button" onclick="backspace();"><-</button>
+<button class="Button" type="button" onclick="buttonOff.functionality()">OFF</button>
+<button class="Button" type="button" onclick="buttonReset.functionality()">AC</button>
+<button class="Button" type="button" onclick="buttonClear.functionality()"><-</button>
 <br />
-<button class="Button" type="button" onclick="clicked(1)">1</button>
-<button class="Button" type="button" onclick="clicked(2)">2</button>
-<button class="Button" type="button" onclick="clicked(3)">3</button>
+<button class="Button" type="button" onclick="button1.functionality()">1</button>
+<button class="Button" type="button" onclick="button2.functionality()">2</button>
+<button class="Button" type="button" onclick="button3.functionality()">3</button>
 <br />
-<button class="Button" type="button" onclick="clicked(4)">4</button>
-<button class="Button" type="button" onclick="clicked(5)">5</button>
-<button class="Button" type="button" onclick="clicked(6)">6</button>
+<button class="Button" type="button" onclick="button4.functionality()">4</button>
+<button class="Button" type="button" onclick="button5.functionality()">5</button>
+<button class="Button" type="button" onclick="button6.functionality()">6</button>
 <br />
-<button class="Button" type="button" onclick="clicked(7)">7</button>
-<button class="Button" type="button" onclick="clicked(8)">8</button>
-<button class="Button" type="button" onclick="clicked(9)">9</button>
+<button class="Button" type="button" onclick="button7.functionality()">7</button>
+<button class="Button" type="button" onclick="button8.functionality()">8</button>
+<button class="Button" type="button" onclick="button9.functionality()">9</button>
 <br />
-<button class="Button" type="button" onclick="equals()">=</button>
-<button class="Button" type="button" onclick="clicked(0)">0</button>
-<button class="Button" type="button" onclick="sum()">+</button>
+<button class="Button" type="button" onclick="buttonResult.functionality()">=</button>
+<button class="Button" type="button" onclick="button0.functionality()">0</button>
+<button class="Button" type="button" onclick="buttonPlus.functionality()">+</button>
 <br />
-<button class="Button" type="button" onclick="subtraction()">-</button>
-<button class="Button" type="button" onclick="multiplication()">*</button>
-<button class="Button" type="button" onclick="division()">/</button>
+<button class="Button" type="button" onclick="buttonSub.functionality()">-</button>
+<button class="Button" type="button" onclick="buttonMul.functionality()">*</button>
+<button class="Button" type="button" onclick="buttonDiv.functionality()">/</button>
 <br />
-<button class="Button" type="button" onclick="sine()">sin</button>
-<button class="Button" type="button" onclick="cosine()">cos</button>
-<button class="Button" type="button" onclick="tangent()">tan</button>
+<button class="Button" type="button" onclick="buttonSin.functionality()">sin</button>
+<button class="Button" type="button" onclick="buttonCos.functionality()">cos</button>
+<button class="Button" type="button" onclick="buttonTan.functionality()">tan</button>
 <br />
-<button class="Button" type="button" onclick="squareRoot()">√</button>
-<button class="Button" type="button" onclick="log10()">log</button>
-<button class="Button" type="button" onclick="logE()">ln</button>
+<button class="Button" type="button" onclick="buttonSqrt.functionality()">√</button>
+<button class="Button" type="button" onclick="buttonLog.functionality()">log</button>
+<button class="Button" type="button" onclick="buttonLn.functionality()">ln</button>
 <br />
-<button class="Button" type="button" onclick="pi()">π</button>
-<button class="Button" type="button" onclick="negate()">+ / -</button>
-<button class="Button" type="button" onclick="e()">e</button>
+<button class="Button" type="button" onclick="buttonPI.functionality()">π</button>
+<button class="Button" type="button" onclick="buttonNegate.functionality()">+ / -</button>
+<button class="Button" type="button" onclick="buttonE.functionality()">e</button>
 <br />
-<button class="Button" type="button" onclick="percentage()">%</button>
-<button class="Button" type="button" onclick="power()">xⁿ</button>
-<button class="Button" type="button" onclick="decimal()">.</button>
+<button class="Button" type="button" onclick="buttonPercentage.functionality()">%</button>
+<button class="Button" type="button" onclick="buttonPow.functionality()">^</button>
+<button class="Button" type="button" onclick="buttonDecimal.functionality()">.</button>
 <br />
+
 <style>
   .gsfi {
     margin-bottom: 6.5%;
@@ -62,6 +59,7 @@
   }
 </style>
 <script>
+
   var solution = 0;
   var operand1 = 0;
   var operand2 = 0;
@@ -75,213 +73,201 @@
   var sinceDecimal = 1;
   var pendingOperation;
 
-  function switchOff() {
-    window.close();
+  function Button(val) {
+    this.val = val;
   }
 
-  function currentTextMessage() {
-    return document.getElementById("lst-ib").value;
-  }
-  
-  function backspace() {
-    var lastChar = currentTextMessage().charAt(currentTextMessage().length - 1);
-    if (!isNaN(Number(lastChar)) && lastChar !== " ") {
-      document.getElementById("lst-ib").value = currentTextMessage().substring(0, currentTextMessage().length - 1);
-      temp = (temp - (temp % 10)) / 10;
-      // TODO : Fix the code commented below to make backspace work for decimals as well.
-//      if (sinceDecimal > 1) {
-//        temp = (temp - (temp % 10)) / 10;
-//      } else {
-//        temp -= (Number(lastChar) / Math.pow(10, sinceDecimal - 1));
-//        sinceDecimal--;
-//      }
-    } else {
-      // PRE: This function will only undo +, *, -, / operations.
-      // TODO: Although the other functions are easy to undo, due to time
-      // TODO: constraints I will be ignoring them for now.
-      document.getElementById("lst-ib").value = currentTextMessage().substring(0, currentTextMessage().length - 3);
-      operationPending = false;
-      pendingOperation = undefined;
-      if (lastSetOperand1) {
-        temp = operand1;
-        lastSetOperand1 = false;
-        lastSetOperand2 = true;
-      } else {
-        temp = operand2;
-        lastSetOperand2 = false;
-        lastSetOperand1 = true;
-      }
-    }
+  function NumberButton(val) {
+    Button.call(this, val);
   }
 
-  function sum() {
+  function BinaryOps(val) {
+    Button.call(this, val);
+  }
+
+  function DisplayBasedButtons(val) {
+    Button.call(this, val);
+  }
+
+  function TrigOps(val) {
+    Button.call(this, val);
+  }
+
+  function LogOps(val) {
+    Button.call(this, val);
+  }
+
+  function Constants(val) {
+    Button.call(this, val);
+  }
+
+  function Misc(val) {
+    Button.call(this, val);
+  }
+
+  NumberButton.prototype = Object.create(Button.prototype);
+  NumberButton.prototype.functionality = function () {
+    clicked(this.val);
+  };
+
+  BinaryOps.prototype = Object.create(Button.prototype);
+  BinaryOps.prototype.functionality = function () {
     clicked();
-    document.getElementById("lst-ib").value += " + ";
-    pendingOperation = plus();
+    document.getElementById("lst-ib").value += " " + this.val + " ";
+    pendingOperation = binaryOperator(this.val);
     operationPending = true;
-  }
+  };
 
-  function plus() {
+  function binaryOperator(operator) {
     var lastSet = (lastSetOperand1) ? operand1 : operand2;
     return function (number) {
-      solution = number + lastSet;
-    };
-  }
-
-  function subtraction() {
-    clicked();
-    document.getElementById("lst-ib").value += " - ";
-    pendingOperation = minus();
-    operationPending = true;
-  }
-
-  function minus() {
-    var lastSet = (lastSetOperand1) ? operand1 : operand2;
-    return function (number) {
-      solution = lastSet - number;
-    };
-  }
-
-  function multiplication() {
-    clicked();
-    document.getElementById("lst-ib").value += " * ";
-    pendingOperation = prod();
-    operationPending = true;
-  }
-
-  function prod() {
-    var lastSet = (lastSetOperand1) ? operand1 : operand2;
-    return function (number) {
-      solution = number * lastSet;
-    };
-  }
-
-  function division() {
-    clicked();
-    document.getElementById("lst-ib").value += " / ";
-    pendingOperation = div();
-    operationPending = true;
-  }
-
-  function div() {
-    var lastSet = (lastSetOperand1) ? operand1 : operand2;
-    return function (number) {
-      if (number === 0) {
-        isSolutionInfinity = true;
-      } else {
-        solution = lastSet / number;
+      solution = lastSet;
+      switch (operator) {
+        case "+" :
+          solution += number;
+          break;
+        case "-" :
+          solution -= number;
+          break;
+        case "*" :
+          solution *= number;
+          break;
+        case "/" :
+          if (number === 0) {
+            isSolutionInfinity = true;
+            solution = NaN;
+          } else {
+            solution /= number;
+          }
+          break;
+        default:
+          solution = Math.pow(lastSet, number);
+          break;
       }
     };
   }
 
-  function sine() {
-    clicked();
-    document.getElementById("lst-ib").value = "sin ( " + document.getElementById("lst-ib").value + " )";
-    var lastSet = (lastSetOperand1) ? operand1 : operand2;
-    solution = Math.sin(lastSet);
-  }
-
-  function cosine() {
-    clicked();
-    document.getElementById("lst-ib").value = "cos ( " + document.getElementById("lst-ib").value + " )";
-    var lastSet = (lastSetOperand1) ? operand1 : operand2;
-    solution = Math.cos(lastSet);
-  }
-
-  function tangent() {
-    clicked();
-    document.getElementById("lst-ib").value = "tan ( " + document.getElementById("lst-ib").value + " )";
-    var lastSet = (lastSetOperand1) ? operand1 : operand2;
-    solution = Math.tan(lastSet);
-  }
-
-  function squareRoot() {
-    clicked();
-    document.getElementById("lst-ib").value = "√ " + document.getElementById("lst-ib").value;
-    var lastSet = (lastSetOperand1) ? operand1 : operand2;
-    if (lastSet < 0) {
-      isInvalidOperation = true;
-    } else {
-      solution = Math.sqrt(lastSet);
+  DisplayBasedButtons.prototype = Object.create(Button.prototype);
+  DisplayBasedButtons.prototype.functionality = function () {
+    switch (this.val) {
+      case "OFF" :
+        switchOff();
+        break;
+      case "AC" :
+        reset();
+        break;
+      case "<-" :
+        backspace();
+        break;
+      default:
+        equals();
+        break;
     }
-  }
+  };
 
-  function log10() {
+  TrigOps.prototype = Object.create(Button.prototype);
+  TrigOps.prototype.functionality = function () {
     clicked();
-    document.getElementById("lst-ib").value = "log " + document.getElementById("lst-ib").value;
+    document.getElementById("lst-ib").value = this.val + " ( " + document.getElementById("lst-ib").value + " )";
     var lastSet = (lastSetOperand1) ? operand1 : operand2;
-    if (lastSet <= 0) {
-      isInvalidOperation = true;
-    } else {
-      solution = Math.log(lastSet) / Math.log(10);
+    switch (this.val) {
+      case "sin" :
+        solution = Math.sin(lastSet);
+        break;
+      case "cos" :
+        solution = Math.cos(lastSet);
+        break;
+      default :
+        solution = Math.tan(lastSet);
+        break;
     }
-  }
+  };
 
-  function logE() {
+  LogOps.prototype = Object.create(Button.prototype);
+  LogOps.prototype.functionality = function () {
     clicked();
-    document.getElementById("lst-ib").value = "ln " + document.getElementById("lst-ib").value;
+    document.getElementById("lst-ib").value = this.val + " " + document.getElementById("lst-ib").value;
     var lastSet = (lastSetOperand1) ? operand1 : operand2;
     if (lastSet <= 0) {
       isInvalidOperation = true;
     } else {
       solution = Math.log(lastSet);
-    }
-  }
-
-  function pi() {
-    if (!operationPending) {
-      clicked();
-      temp = Math.PI;
-    } else {
-      pendingOperation(Math.PI);
-      operationPending = false;
-    }
-    document.getElementById("lst-ib").value += String(Math.PI);
-  }
-
-  function negate() {
-    clicked();
-    var lastSet = (lastSetOperand1) ? operand1 : operand2;
-    if (lastSet !== 0) {
-      if (lastSet < 0) {
-        document.getElementById("lst-ib").value = document.getElementById("lst-ib").value.substring(1);
-      } else {
-        document.getElementById("lst-ib").value = "-" + document.getElementById("lst-ib").value;
+      switch (this.val) {
+        case "log" :
+          solution /= 10;
+          break;
+        default :
+          break;
       }
     }
-    solution = -1 * lastSet;
-    equals();
-  }
+  };
 
-  function e() {
+  Constants.prototype = Object.create(Button.prototype);
+  Constants.prototype.functionality = function () {
     if (!operationPending) {
       clicked();
-      temp = Math.E;
+      temp = this.val;
     } else {
-      pendingOperation(Math.E);
+      pendingOperation(this.val);
       operationPending = false;
     }
-    document.getElementById("lst-ib").value += String(Math.E);
-  }
+    document.getElementById("lst-ib").value += String(this.val);
+  };
 
-  function percentage() {
-    document.getElementById("lst-ib").value += "%";
-    temp /= 100;
-  }
+  Misc.prototype = Object.create(Button.prototype);
+  Misc.prototype.functionality = function () {
+    switch(this.val) {
+      case "√" :
+        squareRoot();
+        break;
+      case "+/-" :
+        negate();
+        break;
+      case "%" :
+        percentage();
+        break;
+      default:
+        decimal();
+        break;
+    }
+  };
 
-  function power() {
-    clicked();
-    document.getElementById("lst-ib").value += " raised to ";
-    pendingOperation = raise();
-    operationPending = true;
-  }
+  var button1 = new NumberButton(1);
+  var button2 = new NumberButton(2);
+  var button3 = new NumberButton(3);
+  var button4 = new NumberButton(4);
+  var button5 = new NumberButton(5);
+  var button6 = new NumberButton(6);
+  var button7 = new NumberButton(7);
+  var button8 = new NumberButton(8);
+  var button9 = new NumberButton(9);
+  var button0 = new NumberButton(0);
 
-  function raise() {
-    var lastSet = (lastSetOperand1) ? operand1 : operand2;
-    return function (number) {
-      solution = Math.pow(lastSet, number);
-    };
-  }
+  var buttonPlus = new BinaryOps("+");
+  var buttonSub = new BinaryOps("-");
+  var buttonMul = new BinaryOps("*");
+  var buttonDiv = new BinaryOps("/");
+  var buttonPow = new BinaryOps("^");
+
+  var buttonOff = new DisplayBasedButtons("OFF");
+  var buttonReset = new DisplayBasedButtons("AC");
+  var buttonClear = new DisplayBasedButtons("<-");
+  var buttonResult = new DisplayBasedButtons("=");
+
+  var buttonSin = new TrigOps("sin");
+  var buttonCos = new TrigOps("cos");
+  var buttonTan = new TrigOps("tan");
+
+  var buttonLog = new LogOps("log");
+  var buttonLn = new LogOps("ln");
+
+  var buttonPI = new Constants(Math.PI);
+  var buttonE = new Constants(Math.E);
+
+  var buttonSqrt = new Misc("√");
+  var buttonNegate = new Misc("+/-");
+  var buttonDecimal = new Misc(".");
+  var buttonPercentage = new Misc("%");
 
   function decimal() {
     if (isDecimal) {
@@ -355,6 +341,81 @@
     document.getElementById("lst-ib").value = "";
   }
 
+  function switchOff() {
+    window.close();
+  }
+
+  function currentTextMessage() {
+    return document.getElementById("lst-ib").value;
+  }
+
+  function negate() {
+    clicked();
+    var lastSet = (lastSetOperand1) ? operand1 : operand2;
+    if (lastSet !== 0) {
+      if (lastSet < 0) {
+        document.getElementById("lst-ib").value = document.getElementById("lst-ib").value.substring(1);
+      } else {
+        document.getElementById("lst-ib").value = "-" + document.getElementById("lst-ib").value;
+      }
+    }
+    solution = -1 * lastSet;
+    equals();
+  }
+
+  function percentage() {
+    document.getElementById("lst-ib").value += "%";
+    temp /= 100;
+  }
+
+  function squareRoot() {
+    clicked();
+    document.getElementById("lst-ib").value = "√ " + document.getElementById("lst-ib").value;
+    var lastSet = (lastSetOperand1) ? operand1 : operand2;
+    if (lastSet < 0) {
+      isInvalidOperation = true;
+    } else {
+      solution = Math.sqrt(lastSet);
+    }
+  }
+
+  function backspace() {
+    var lastChar = currentTextMessage().charAt(currentTextMessage().length - 1);
+    if (!isNaN(Number(lastChar)) && lastChar !== " ") {
+      document.getElementById("lst-ib").value = currentTextMessage().substring(0, currentTextMessage().length - 1);
+      temp = (temp - (temp % 10)) / 10;
+      // TODO : Fix the code commented below to make backspace work for decimals as well.
+//      if (sinceDecimal > 1) {
+//        temp = (temp - (temp % 10)) / 10;
+//      } else {
+//        temp -= (Number(lastChar) / Math.pow(10, sinceDecimal - 1));
+//        sinceDecimal--;
+//      }
+    } else {
+      // PRE: This function will only undo +, *, -, / operations.
+      // TODO: Although the other functions are easy to undo, due to time
+      // TODO: constraints I will be ignoring them for now.
+      document.getElementById("lst-ib").value = currentTextMessage().substring(0, currentTextMessage().length - 3);
+      operationPending = false;
+      pendingOperation = undefined;
+      if (lastSetOperand1) {
+        temp = operand1;
+        lastSetOperand1 = false;
+        lastSetOperand2 = true;
+      } else {
+        temp = operand2;
+        lastSetOperand2 = false;
+        lastSetOperand1 = true;
+      }
+    }
+  }
+
 </script>
 </body>
+<head>
+  <meta charset="UTF-8">
+  <title>Scientific Calculator</title>
+</head>
 </html>
+
+<!--ravijmca@gmail.com-->
