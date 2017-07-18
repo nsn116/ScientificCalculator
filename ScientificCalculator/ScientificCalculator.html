@@ -60,55 +60,64 @@
 </style>
 <script>
 
-  var solution = 0;
-  var operand1 = 0;
-  var operand2 = 0;
-  var temp = 0;
-  var lastSetOperand1 = false;
-  var lastSetOperand2 = false;
-  var isSolutionInfinity = false;
-  var isInvalidOperation = false;
-  var operationPending = false;
-  var isDecimal = false;
-  var sinceDecimal = 1;
-  var pendingOperation;
+  var solution = 0; // Contains the solution of the pending operation, if any
+  var operand1 = 0; // One operand variable
+  var operand2 = 0; // Other operand variable
+  var temp = 0; // Temporary variable which gets modified every time a digit is
+  // entered or deleted by the user
+  var lastSetOperand1 = false; // Indicates if the last value that was set was
+  // the variable operand1
+  var lastSetOperand2 = false; // Indicates if the last value that was set was
+  // the variable operand2
+  var isSolutionInfinity = false; // Indicates if the dividend operand of the
+  // division operation was infinity or not
+  var isInvalidOperation = false; // Indicates if the operation was valid or not
+  var operationPending = false; // Indicates if there is an operation pending to
+  // be applied or not
+  var pendingOperation; // Stores the operation pending to be applied
+  var isDecimal = false; // Indicates if the current operand has a decimal point
+  // in it or not
+  var sinceDecimal = 1; // Indicates the number of digits since the decimal
+   // point (1 being the default value)
 
   function Button(val) {
     this.val = val;
-  }
+  } // Constructor that initialises any type of button
 
   function NumberButton(val) {
     Button.call(this, val);
-  }
+  } // sub-class for buttons whose value is a number
 
   function BinaryOps(val) {
     Button.call(this, val);
-  }
+  } // sub-class for buttons whose value is a binary operator
 
   function DisplayBasedButtons(val) {
     Button.call(this, val);
-  }
+  } // sub-class for buttons whose value is a display changing button
 
   function TrigOps(val) {
     Button.call(this, val);
-  }
+  } // sub-class for buttons whose value is a trigonometric operation
 
   function LogOps(val) {
     Button.call(this, val);
-  }
+  } // sub-class for buttons whose value is a logarithmic operation
 
   function Constants(val) {
     Button.call(this, val);
-  }
+  } // sub-class for buttons whose value is a constant (viz PI or E)
 
   function Misc(val) {
     Button.call(this, val);
-  }
+  } // Miscellaneous buttons (square root, decimal, negate or percentage), which
+  // fall under this category since they don't have anything in common within
+  // the sub-class or with any other sub-class
 
   NumberButton.prototype = Object.create(Button.prototype);
   NumberButton.prototype.functionality = function () {
     clicked(this.val);
-  };
+  }; // Filling in the functionality for numbered buttons
 
   BinaryOps.prototype = Object.create(Button.prototype);
   BinaryOps.prototype.functionality = function () {
@@ -116,7 +125,9 @@
     document.getElementById("lst-ib").value += " " + this.val + " ";
     pendingOperation = binaryOperator(this.val);
     operationPending = true;
-  };
+  }; // Filling in the functionality for binary operators. Makes use of a helper
+  // function that identifies operator and returns the appropriate functionality
+  // given that the operators and very similar to each other
 
   function binaryOperator(operator) {
     var lastSet = (lastSetOperand1) ? operand1 : operand2;
@@ -163,7 +174,10 @@
         equals();
         break;
     }
-  };
+  }; // Filling in the functionality for display modifying buttons. Since what
+  // they do is similar they have been placed in this class, although their
+  // functionality is different, so they simply call functions which explicitly
+  // work towards the goal of the operation
 
   TrigOps.prototype = Object.create(Button.prototype);
   TrigOps.prototype.functionality = function () {
@@ -181,7 +195,7 @@
         solution = Math.tan(lastSet);
         break;
     }
-  };
+  }; // Filling in the functionality for trigonometric function buttons.
 
   LogOps.prototype = Object.create(Button.prototype);
   LogOps.prototype.functionality = function () {
@@ -200,7 +214,7 @@
           break;
       }
     }
-  };
+  }; // Filling in the functionality for logarithmic function buttons.
 
   Constants.prototype = Object.create(Button.prototype);
   Constants.prototype.functionality = function () {
@@ -212,7 +226,7 @@
       operationPending = false;
     }
     document.getElementById("lst-ib").value += String(this.val);
-  };
+  }; // Filling in the functionality for the constant buttons.
 
   Misc.prototype = Object.create(Button.prototype);
   Misc.prototype.functionality = function () {
@@ -230,7 +244,7 @@
         decimal();
         break;
     }
-  };
+  }; // Filling in the functionality for the miscellaneous buttons.
 
   var button1 = new NumberButton(1);
   var button2 = new NumberButton(2);
@@ -269,6 +283,10 @@
   var buttonDecimal = new Misc(".");
   var buttonPercentage = new Misc("%");
 
+  /**
+   * Works out if the operand already contains a decimal and accordingly sets
+   * flags if it doesn't and modifies the text-box by adding a '.'
+   */
   function decimal() {
     if (isDecimal) {
       document.getElementById("lst-ib").value = "Invalid Operation ! RESET !!!";
@@ -279,6 +297,10 @@
     }
   }
 
+  /**
+   * Checks appropriate flags for validity of the operation and value of output
+   * and accordingly displays the output.
+   */
   function equals() {
     clicked();
     if (isSolutionInfinity) {
@@ -294,8 +316,14 @@
     solution = 0;
   }
 
+  /**
+   * clicked modifies temp or sets the operand variables accordingly, every time
+   * a numbered button is clicked
+   * @param val the value of the button clicked
+   */
   function clicked(val) {
     if (val === undefined) {
+      // If the operand last set was NOT operand2 then operand1 will be set
       if (!lastSetOperand1) {
         operand1 = temp;
         lastSetOperand1 = true;
@@ -304,7 +332,9 @@
           pendingOperation(operand1);
           operationPending = false;
         }
-      } else {
+      }
+      // If the operand last set was NOT operand1 then operand2 will be set
+      else {
         operand2 = temp;
         lastSetOperand2 = true;
         lastSetOperand1 = false;
@@ -318,8 +348,12 @@
       sinceDecimal = 1;
     } else {
       if (!isDecimal) {
+        // If no decimal is present, add val at the unit's place
         temp = temp * 10 + val;
       } else {
+        // If there is a decimal use sinceDecimal to covert val to a number
+        // representing its correct position after the decimal and then add to
+        // temp and then increment sinceDecimal
         temp += (val / Math.pow(10, sinceDecimal));
         sinceDecimal++;
       }
@@ -327,6 +361,9 @@
     }
   }
 
+  /**
+   * Resets all variables to initial values and empties the display text-box
+   */
   function reset() {
     solution = 0;
     operand1 = 0;
@@ -341,33 +378,60 @@
     document.getElementById("lst-ib").value = "";
   }
 
+  /**
+   * Switches off the calculator by closing the tab
+   */
   function switchOff() {
     window.close();
   }
 
+  /**
+   * Returns the current display text-box message
+   */
   function currentTextMessage() {
     return document.getElementById("lst-ib").value;
   }
 
+  /**
+   * Negates the current operand
+   */
   function negate() {
     clicked();
     var lastSet = (lastSetOperand1) ? operand1 : operand2;
+    // Early exit if the current operand is already 0
     if (lastSet !== 0) {
       if (lastSet < 0) {
-        document.getElementById("lst-ib").value = document.getElementById("lst-ib").value.substring(1);
+        // If the last operand is negative then display only the number
+        // (everything after the - sign)
+        document.getElementById("lst-ib").value =
+          document.getElementById("lst-ib").value.substring(1);
       } else {
-        document.getElementById("lst-ib").value = "-" + document.getElementById("lst-ib").value;
+        // If the last operand is positive then display only the number prefixed
+        // by an - sign
+        document.getElementById("lst-ib").value =
+          "-" + document.getElementById("lst-ib").value;
       }
     }
+    // actually modify the value of the last set variable
     solution = -1 * lastSet;
+    // Immediately display the changed value without the user specifically
+    // having to press the = button
     equals();
   }
 
+  /**
+   * Divide the current operand by 100 and displays the % symbol in the display
+   * text-box
+   */
   function percentage() {
     document.getElementById("lst-ib").value += "%";
     temp /= 100;
   }
 
+  /**
+   * Displays a square root sign in the text-box after having checked the feasibility of performing
+   * the square root operation on the operand
+   */
   function squareRoot() {
     clicked();
     document.getElementById("lst-ib").value = "√ " + document.getElementById("lst-ib").value;
@@ -379,6 +443,10 @@
     }
   }
 
+  /**
+   * Deletes the last digit entered or reverses the last function performed to
+   * take the calculator back to a consistent stage.
+   */
   function backspace() {
     var lastChar = currentTextMessage().charAt(currentTextMessage().length - 1);
     if (!isNaN(Number(lastChar)) && lastChar !== " ") {
@@ -417,5 +485,3 @@
   <title>Scientific Calculator</title>
 </head>
 </html>
-
-<!--ravijmca@gmail.com-->
